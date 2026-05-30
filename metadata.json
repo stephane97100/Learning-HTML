@@ -1,0 +1,6 @@
+{
+  "name": "Apprendre le HTML",
+  "description": "Application interactive et progressive pour apprendre les bases et les concepts avancés du HTML avec leçons, exemples de code interactifs et quiz.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

@@ -1,0 +1,39 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:ital,wght@0,300..900;1,300..900&family=JetBrains+Mono:ital,wght@0,100..800;1,100..800&family=Playfair+Display:ital,wght@0,400..900;1,400..900&family=Lora:ital,wght@0,400..700;1,400..700&display=swap');
+@import "tailwindcss";
+
+@theme {
+  --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
+  --font-display: "Playfair Display", serif;
+  --font-serif: "Lora", serif;
+  --font-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, monospace;
+}
+
+/* Custom scrollbars matching the natural aesthetic */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: rgba(141, 145, 128, 0.3);
+  border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(141, 145, 128, 0.5);
+}
+
+/* Natural Tones styling highlights */
+.natural-glow-card {
+  box-shadow: 0 4px 24px -4px rgba(92, 111, 89, 0.08);
+}
+
+.natural-glow-subtle {
+  box-shadow: 0 2px 12px rgba(92, 111, 89, 0.04);
+}
+
+/* Customize code container slightly for elegance */
+textarea, iframe {
+  transition: all 0.2s ease-in-out;
+}
