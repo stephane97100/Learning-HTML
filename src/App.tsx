@@ -21,7 +21,10 @@ import {
   X,
   RotateCcw,
   Sliders,
-  Laptop
+  Laptop,
+  Trophy,
+  Target,
+  User
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 import { lessonsData } from './data/lessons';
@@ -184,6 +187,36 @@ export default function App() {
   const progressPercentage = useMemo(() => {
     return Math.round((progress.completedLessonIds.length / lessonsData.length) * 100);
   }, [progress.completedLessonIds]);
+
+  // Compute senior expertise rank based on curriculum integration
+  const learningRank = useMemo(() => {
+    if (progressPercentage === 100) {
+      return { title: "Doyen HTML5 Supérieur", text: "Maîtrise absolue démontrée !", color: "text-[#1e3a1e]", bg: "bg-[#e8f0e5]", border: "border-[#cbdcc5]" };
+    }
+    if (progressPercentage >= 80) {
+      return { title: "Développeur HTML Senior", text: "Expertise technique avancée", color: "text-[#8c52ff]", bg: "bg-[#f3fffa]", border: "border-[#cbd2c5]" };
+    }
+    if (progressPercentage >= 50) {
+      return { title: "Artisan Web Confirmé", text: "Structure moderne comprise", color: "text-[#42503d]", bg: "bg-[#f2f4ee]", border: "border-[#dadcc8]" };
+    }
+    if (progressPercentage >= 20) {
+      return { title: "Apprenti Praticien", text: "Fondations en cours d'ancrage", color: "text-[#3c3a30]", bg: "bg-[#faf9f4]", border: "border-[#dad4be]" };
+    }
+    return { title: "Novice de l'Académie", text: "Premiers pas d'architecte", color: "text-[#7d7768]", bg: "bg-[#faf9f5]", border: "border-[#dad4be]" };
+  }, [progressPercentage]);
+
+  // Compute average score of non-zero attempts
+  const averageQuizScore = useMemo(() => {
+    const scores = Object.values(progress.quizScores) as number[];
+    if (scores.length === 0) return 0;
+    const sum = scores.reduce((a: number, b: number) => a + b, 0);
+    return Math.round((sum / (scores.length * 5)) * 100);
+  }, [progress.quizScores]);
+
+  // Count active code custom templates created
+  const interactiveLabsPracticed = useMemo(() => {
+    return Object.keys(progress.sandboxCodes).length;
+  }, [progress.sandboxCodes]);
 
   // Handle saving current code changes
   const handleCodeChange = (newVal: string) => {
@@ -357,6 +390,13 @@ export default function App() {
                     <p className="text-[11px] text-[#7d7768] line-clamp-1 mt-0.5">
                       {lesson.shortDescription}
                     </p>
+                    {completed && progress.quizScores[lesson.id] !== undefined && (
+                      <div className="mt-1 flex items-center gap-1.5">
+                        <span className="inline-flex items-center gap-0.5 text-[9px] font-mono font-bold text-[#42503d] bg-[#e1ebd9] px-1.5 py-0.5 rounded border border-[#ccdcc5] uppercase tracking-wider">
+                          ★ Quiz : {progress.quizScores[lesson.id]}/5
+                        </span>
+                      </div>
+                    )}
                   </div>
 
                   {active && (
@@ -368,6 +408,52 @@ export default function App() {
               );
             })}
           </nav>
+
+          {/* Table credentials and progress statistics */}
+          <div className="p-4 bg-[#f2efe4] border-t border-[#dad4be] gap-3 flex flex-col shrink-0">
+            <div className="flex items-center gap-2">
+              <div className="p-1.5 bg-[#dcdbc4] text-[#42503d] rounded-md">
+                <Trophy className="w-4 h-4" />
+              </div>
+              <span className="text-xs font-bold text-[#2d2a22] uppercase tracking-wider">Tableau de bord</span>
+            </div>
+            
+            <div className={`p-3 rounded-lg border ${learningRank.border} ${learningRank.bg} transition-all duration-300`}>
+              <div className="flex justify-between items-start">
+                <div>
+                  <span className="text-[9px] text-[#7d7768] uppercase font-bold block">Rang d'Apprenti :</span>
+                  <span className={`text-xs font-extrabold ${learningRank.color} font-display block leading-tight mt-0.5`}>
+                    {learningRank.title}
+                  </span>
+                </div>
+                <div className="text-[10px] font-mono text-[#5c6f59] font-bold bg-[#fbfbf9]/90 px-1.5 py-0.5 rounded border border-[#dad4be]/50">
+                  {progressPercentage}%
+                </div>
+              </div>
+              <p className="text-[10px] text-[#5c594c] mt-1 italic">{learningRank.text}</p>
+            </div>
+
+            <div className="grid grid-cols-2 gap-2 text-center text-[10px]">
+              <div className="bg-[#faf9f5] border border-[#dad4be] rounded p-2 flex flex-col justify-between">
+                <span className="text-[#7d7768] font-semibold block leading-tight">Moyenne Quiz</span>
+                <span className="text-xs font-mono font-bold text-[#42503d] flex items-center justify-center gap-0.5 mt-1">
+                  <Target className="w-3.5 h-3.5 text-[#5c6f59]" /> {averageQuizScore}%
+                </span>
+              </div>
+              <div className="bg-[#faf9f5] border border-[#dad4be] rounded p-2 flex flex-col justify-between">
+                <span className="text-[#7d7768] font-semibold block leading-tight">Labs Réalisés</span>
+                <span className="text-xs font-mono font-bold text-[#42503d] flex items-center justify-center gap-0.5 mt-1">
+                  <Code2 className="w-3.5 h-3.5 text-[#5c6f59]" /> {interactiveLabsPracticed} / {lessonsData.length}
+                </span>
+              </div>
+            </div>
+
+            <div className="text-center pt-0.5">
+              <span className="text-[9px] text-[#8a8775] font-mono">
+                ✓ Sauvegarde automatique locale
+              </span>
+            </div>
+          </div>
         </aside>
 
         {/* Central Workspace (Tab Interface, Lesson presentation, Editor sandbox, Quiz engine) */}
